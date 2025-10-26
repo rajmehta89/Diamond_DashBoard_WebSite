@@ -176,7 +176,7 @@ function Toolbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex justify-start">
         {/* {updatedAt && (
           <span className="text-xs text-muted-foreground">
             Updated {new Date(updatedAt).toLocaleTimeString()}
@@ -186,6 +186,7 @@ function Toolbar({
           Refresh
         </Button>
       </div>
+      
     </div>
   )
 }
