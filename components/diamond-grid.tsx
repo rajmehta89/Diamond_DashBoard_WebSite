@@ -157,7 +157,7 @@ function Toolbar({
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search by stock, report, color, clarity..."
-          className="max-w-md"
+          className="w-50"
         />
         <div className="flex items-center gap-1 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {shapes.map((s) => (
@@ -177,11 +177,11 @@ function Toolbar({
       </div>
 
       <div className="flex items-center gap-2">
-        {updatedAt && (
+        {/* {updatedAt && (
           <span className="text-xs text-muted-foreground">
             Updated {new Date(updatedAt).toLocaleTimeString()}
           </span>
-        )}
+        )} */}
         <Button onClick={onRefresh} variant="outline" size="sm" className="transition-colors bg-transparent">
           Refresh
         </Button>
