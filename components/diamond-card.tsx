@@ -30,7 +30,6 @@ export function DiamondCard({ item }: Props) {
             <CardTitle className="text-pretty text-xl md:text-2xl">
               {item.shape || "—"} <span className="text-muted-foreground">•</span> {item.weight ?? "—"} ct
             </CardTitle>
-            <Badge className="rounded-full bg-accent text-accent-foreground">{price}</Badge>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -86,7 +85,11 @@ export function DiamondCard({ item }: Props) {
               }}
             />
           </div>
-
+           
+           <div className="flex items-center  justify-center mb-3">
+           <Badge className="rounded-full bg-accent text-accent-foreground">{price}</Badge>
+           </div>
+        
           <div className="flex flex-wrap items-center justify-between gap-2">
             {/* <div className="text-sm">
               <span className="text-muted-foreground">Shape</span>{" "}
