@@ -232,7 +232,7 @@ function Toolbar({
   onRefresh: () => void
 }) {
   return (
-    <div className="space-y-4 rounded-xl border bg-card p-4 md:p-6">
+    <div className="space-y-2 rounded-xl border bg-white p-2 md:p-4">
       {/* Single Row Layout */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:gap-3">
         {/* Search Bar - Smaller */}
