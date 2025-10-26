@@ -115,7 +115,7 @@ function normalizeRow(raw: Record<string, any>): Diamond | null {
     depth: numOrNull(depthStr),
     diamondType,
     lab,
-    pricePerCt: numOrNull(pricePerCtStr),
+    pricePerCt: (numOrNull(pricePerCtStr) ?? 0) + 20,
     videoUrl,
     imageUrl,
     certificateUrl,
