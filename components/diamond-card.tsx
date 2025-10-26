@@ -52,10 +52,10 @@ export function DiamondCard({ item }: Props) {
             )}
           </div>
 
-          <div className="text-xs text-muted-foreground">
+          {/* <div className="text-xs text-muted-foreground">
             <span className="font-mono">{item.stock || "—"}</span>{" "}
             {item.report ? <span>• Report {item.report}</span> : null}
-          </div>
+          </div> */}
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -88,14 +88,14 @@ export function DiamondCard({ item }: Props) {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-sm">
+            {/* <div className="text-sm">
               <span className="text-muted-foreground">Shape</span>{" "}
               <span className="font-medium">{item.shape || "—"}</span>
               <span className="text-muted-foreground"> • Weight</span>{" "}
               <span className="font-medium">{item.weight ?? "—"} ct</span>
-            </div>
+            </div> */}
 
-            <div className="flex gap-2">
+            <div className="flex gap-10">
               {item.videoUrl && (
                 <Button asChild size="sm" className="rounded-full bg-primary text-primary-foreground">
                   <a href={item.videoUrl} target="_blank" rel="noopener noreferrer">
