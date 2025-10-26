@@ -27,29 +27,29 @@ export function DiamondCard({ item }: Props) {
         onClick={() => setOpen(true)}
       >
         {/* Fixed Height Header */}
-        <CardHeader className="space-y-3 pb-4">
+        <CardHeader className="space-y-2 pb-2">
           {/* Title - Fixed Height */}
-          <div className="flex min-h-[64px] items-start">
+          <div className="flex min-h-[45px] items-start">
             <CardTitle className="line-clamp-2 text-pretty text-lg font-semibold leading-tight sm:text-xl md:text-2xl">
               {item.shape || "—"} <span className="text-muted-foreground">•</span> {item.weight != null ? item.weight : "—"} ct
             </CardTitle>
           </div>
 
           {/* Badges - Fixed Height Container */}
-          <div className="flex min-h-[32px] flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          <div className="flex min-h-[28px] flex-wrap items-center gap-1.5">
+            <Badge variant="secondary" className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
               {item.color || "—"}
             </Badge>
-            <Badge variant="secondary" className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+            <Badge variant="secondary" className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
               {item.clarity || "—"}
             </Badge>
             {item.cut && (
-              <Badge variant="secondary" className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+              <Badge variant="secondary" className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
                 Cut {item.cut}
               </Badge>
             )}
             {item.lab && (
-              <Badge variant="secondary" className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
+              <Badge variant="secondary" className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-foreground">
                 {item.lab}
               </Badge>
             )}
@@ -57,7 +57,7 @@ export function DiamondCard({ item }: Props) {
         </CardHeader>
 
         {/* Content Area - Flex Grow to Fill Space */}
-        <CardContent className="flex flex-grow flex-col space-y-4 pb-6">
+        <CardContent className="flex flex-grow flex-col space-y-3 pb-4">
           {/* Image Container - Fixed Aspect Ratio */}
           <div
             className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border bg-gradient-to-br from-muted to-muted/60"
@@ -91,19 +91,19 @@ export function DiamondCard({ item }: Props) {
           </div>
 
           {/* Price Badge - Centered & Fixed Height */}
-          <div className="flex min-h-[28px] items-center justify-center">
-            <Badge className="rounded-full bg-gradient-to-r from-accent to-accent/90 px-4 py-1.5 text-sm font-semibold text-accent-foreground shadow-sm">
+          <div className="flex min-h-[24px] items-center justify-center">
+            <Badge className="rounded-full bg-gradient-to-r from-accent to-accent/90 px-3.5 py-1 text-sm font-semibold text-accent-foreground shadow-sm">
               {price}
             </Badge>
           </div>
 
           {/* Action Buttons - Fixed Height, Push to Bottom */}
-          <div className="mt-auto flex min-h-[40px] flex-wrap items-center justify-center gap-3">
+          <div className="mt-auto flex min-h-[36px] flex-wrap items-center justify-center gap-2">
             {item.videoUrl && (
               <Button 
                 asChild 
                 size="sm" 
-                className="rounded-full bg-primary px-5 py-2 text-xs font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
+                className="h-8 rounded-full bg-primary px-4 py-1 text-xs font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
                 onClick={(e) => e.stopPropagation()}
               >
                 <a href={item.videoUrl} target="_blank" rel="noopener noreferrer">
@@ -116,7 +116,7 @@ export function DiamondCard({ item }: Props) {
                 asChild 
                 size="sm" 
                 variant="secondary" 
-                className="rounded-full px-5 py-2 text-xs font-medium shadow-sm transition-all hover:shadow-md"
+                className="h-8 rounded-full px-4 py-1 text-xs font-medium shadow-sm transition-all hover:shadow-md"
                 onClick={(e) => e.stopPropagation()}
               >
                 <a href={item.certificateUrl} target="_blank" rel="noopener noreferrer">
