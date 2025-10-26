@@ -7,6 +7,13 @@ import { REFRESH_INTERVAL_MS } from "@/lib/sheet-config"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DiamondCard } from "./diamond-card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type ApiResp = {
   items: Diamond[]
@@ -26,6 +33,10 @@ const PAGE_SIZE = 50
 export function DiamondGrid() {
   const [query, setQuery] = useState("")
   const [shape, setShape] = useState<string>("All")
+  const [color, setColor] = useState<string>("All")
+  const [clarity, setClarity] = useState<string>("All")
+  const [cut, setCut] = useState<string>("All")
+  const [sortBy, setSortBy] = useState<string>("default")
 
   // SWR Infinite for paginated data
   const getKey = (pageIndex: number, previousPageData: ApiResp | null) => {
@@ -52,26 +63,67 @@ export function DiamondGrid() {
     [data]
   )
 
-  // Compute unique shapes
-  const shapes = useMemo(() => {
-    const s = new Set<string>()
-    allItems.forEach((d) => d.shape && s.add(d.shape))
-    return ["All", ...Array.from(s).sort()]
+  // Compute unique values for filters
+  const filterOptions = useMemo(() => {
+    const shapes = new Set<string>()
+    const colors = new Set<string>()
+    const clarities = new Set<string>()
+    const cuts = new Set<string>()
+
+    allItems.forEach((d) => {
+      if (d.shape) shapes.add(d.shape)
+      if (d.color) colors.add(d.color)
+      if (d.clarity) clarities.add(d.clarity)
+      if (d.cut) cuts.add(d.cut)
+    })
+
+    return {
+      shapes: ["All", ...Array.from(shapes).sort()],
+      colors: ["All", ...Array.from(colors).sort()],
+      clarities: ["All", ...Array.from(clarities).sort()],
+      cuts: ["All", ...Array.from(cuts).sort()],
+    }
   }, [allItems])
 
-  // Filtering
+  // Filtering and sorting
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return allItems.filter((d) => {
+    let result = allItems.filter((d) => {
       const matchesQuery =
         !q ||
         [d.stock, d.report, d.shape, d.color, d.clarity]
           .filter(Boolean)
           .some((v) => String(v).toLowerCase().includes(q))
       const matchesShape = shape === "All" || d.shape === shape
-      return matchesQuery && matchesShape
+      const matchesColor = color === "All" || d.color === color
+      const matchesClarity = clarity === "All" || d.clarity === clarity
+      const matchesCut = cut === "All" || d.cut === cut
+      
+      return matchesQuery && matchesShape && matchesColor && matchesClarity && matchesCut
     })
-  }, [allItems, query, shape])
+
+    // Apply sorting
+    if (sortBy === "price-asc") {
+      result.sort((a, b) => (a.pricePerCt ?? 0) - (b.pricePerCt ?? 0))
+    } else if (sortBy === "price-desc") {
+      result.sort((a, b) => (b.pricePerCt ?? 0) - (a.pricePerCt ?? 0))
+    } else if (sortBy === "weight-asc") {
+      result.sort((a, b) => (a.weight ?? 0) - (b.weight ?? 0))
+    } else if (sortBy === "weight-desc") {
+      result.sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0))
+    }
+
+    return result
+  }, [allItems, query, shape, color, clarity, cut, sortBy])
+
+  const handleResetFilters = () => {
+    setQuery("")
+    setShape("All")
+    setColor("All")
+    setClarity("All")
+    setCut("All")
+    setSortBy("default")
+  }
 
   const totalPages = data?.[0]?.totalPages ?? 1
   const isReachingEnd = size >= totalPages
@@ -94,15 +146,23 @@ export function DiamondGrid() {
   }, [isReachingEnd, isValidating, setSize])
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <Toolbar
-        shapes={shapes}
-        shape={shape}
-        onShapeChange={setShape}
         query={query}
         onQueryChange={setQuery}
+        shape={shape}
+        onShapeChange={setShape}
+        color={color}
+        onColorChange={setColor}
+        clarity={clarity}
+        onClarityChange={setClarity}
+        cut={cut}
+        onCutChange={setCut}
+        sortBy={sortBy}
+        onSortByChange={setSortBy}
+        filterOptions={filterOptions}
+        onReset={handleResetFilters}
         onRefresh={() => mutate()}
-        updatedAt={data?.[0]?.updatedAt}
       />
 
       {isLoading && <Empty text="Loading diamonds..." />}
@@ -118,7 +178,7 @@ export function DiamondGrid() {
       </div>
 
       {/* Load More Button (visible if not auto-scroll) */}
-      {!isReachingEnd && (
+      {!isReachingEnd && filtered.length > 0 && (
         <div ref={loadMoreRef} className="flex justify-center p-4">
           <Button
             onClick={() => setSize((s) => s + 1)}
@@ -134,59 +194,160 @@ export function DiamondGrid() {
 }
 
 function Toolbar({
-  shapes,
-  shape,
-  onShapeChange,
   query,
   onQueryChange,
+  shape,
+  onShapeChange,
+  color,
+  onColorChange,
+  clarity,
+  onClarityChange,
+  cut,
+  onCutChange,
+  sortBy,
+  onSortByChange,
+  filterOptions,
+  onReset,
   onRefresh,
-  updatedAt,
 }: {
-  shapes: string[]
-  shape: string
-  onShapeChange: (s: string) => void
   query: string
   onQueryChange: (q: string) => void
+  shape: string
+  onShapeChange: (s: string) => void
+  color: string
+  onColorChange: (c: string) => void
+  clarity: string
+  onClarityChange: (c: string) => void
+  cut: string
+  onCutChange: (c: string) => void
+  sortBy: string
+  onSortByChange: (s: string) => void
+  filterOptions: {
+    shapes: string[]
+    colors: string[]
+    clarities: string[]
+    cuts: string[]
+  }
+  onReset: () => void
   onRefresh: () => void
-  updatedAt?: string
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border bg-card p-3 md:flex-row md:items-center md:justify-between transition-all duration-300">
-      <div className="flex flex-1 items-center gap-2">
+    <div className="space-y-4 rounded-xl border bg-card p-4 md:p-6">
+      {/* Search Bar */}
+      <div className="w-full">
         <Input
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search by stock, report, color, clarity..."
-          className="w-50"
+          className="w-full"
         />
-        <div className="flex items-center gap-1 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {shapes.map((s) => (
-            <Button
-              key={s}
-              size="sm"
-              variant={s === shape ? "default" : "ghost"}
-              className={`snap-start rounded-full px-3 py-1 transition-colors ${
-                s === shape ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-foreground"
-              }`}
-              onClick={() => onShapeChange(s)}
-            >
-              {s}
-            </Button>
-          ))}
-        </div>
       </div>
 
-      <div className="flex justify-start">
-        {/* {updatedAt && (
-          <span className="text-xs text-muted-foreground">
-            Updated {new Date(updatedAt).toLocaleTimeString()}
-          </span>
-        )} */}
-        <Button onClick={onRefresh} variant="outline" size="sm" className="transition-colors bg-transparent">
-          Refresh
-        </Button>
+      {/* Filter Dropdowns */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {/* Shape */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Shape:</label>
+          <Select value={shape} onValueChange={onShapeChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.shapes.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Color */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Color:</label>
+          <Select value={color} onValueChange={onColorChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.colors.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Cut */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Cut:</label>
+          <Select value={cut} onValueChange={onCutChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.cuts.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Clarity */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Clarity:</label>
+          <Select value={clarity} onValueChange={onClarityChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.clarities.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Sort By */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Sort By:</label>
+          <Select value={sortBy} onValueChange={onSortByChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Default" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="price-asc">Price: Low to High</SelectItem>
+              <SelectItem value="price-desc">Price: High to Low</SelectItem>
+              <SelectItem value="weight-asc">Carat: Low to High</SelectItem>
+              <SelectItem value="weight-desc">Carat: High to Low</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-end gap-2">
+          <Button 
+            onClick={onReset} 
+            variant="outline" 
+            className="flex-1"
+          >
+            Reset Filter
+          </Button>
+          <Button 
+            onClick={onRefresh} 
+            variant="outline"
+            className="flex-1"
+          >
+            Refresh
+          </Button>
+        </div>
       </div>
-      
     </div>
   )
 }
