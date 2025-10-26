@@ -233,119 +233,122 @@ function Toolbar({
 }) {
   return (
     <div className="space-y-4 rounded-xl border bg-card p-4 md:p-6">
-      {/* Search Bar */}
-      <div className="w-full">
-        <Input
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="Search by stock, report, color, clarity..."
-          className="w-full"
-        />
-      </div>
-
-      {/* Filter Dropdowns */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {/* Shape */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Shape:</label>
-          <Select value={shape} onValueChange={onShapeChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.shapes.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {/* Single Row Layout */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:gap-3">
+        {/* Search Bar - Smaller */}
+        <div className="w-full lg:w-64">
+          <Input
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+            placeholder="Search by stock, report..."
+            className="w-full"
+          />
         </div>
 
-        {/* Color */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Color:</label>
-          <Select value={color} onValueChange={onColorChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.colors.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Filters Row */}
+        <div className="flex flex-1 flex-wrap items-end gap-3">
+          {/* Shape */}
+          <div className="flex-1 min-w-[120px] space-y-1">
+            <label className="text-xs font-medium text-foreground">Shape:</label>
+            <Select value={shape} onValueChange={onShapeChange}>
+              <SelectTrigger className="w-full h-10">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                {filterOptions.shapes.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Cut */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Cut:</label>
-          <Select value={cut} onValueChange={onCutChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.cuts.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Color */}
+          <div className="flex-1 min-w-[120px] space-y-1">
+            <label className="text-xs font-medium text-foreground">Color:</label>
+            <Select value={color} onValueChange={onColorChange}>
+              <SelectTrigger className="w-full h-10">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                {filterOptions.colors.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Clarity */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Clarity:</label>
-          <Select value={clarity} onValueChange={onClarityChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.clarities.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Cut */}
+          <div className="flex-1 min-w-[120px] space-y-1">
+            <label className="text-xs font-medium text-foreground">Cut:</label>
+            <Select value={cut} onValueChange={onCutChange}>
+              <SelectTrigger className="w-full h-10">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                {filterOptions.cuts.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Sort By */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Sort By:</label>
-          <Select value={sortBy} onValueChange={onSortByChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Default" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Default</SelectItem>
-              <SelectItem value="price-asc">Price: Low to High</SelectItem>
-              <SelectItem value="price-desc">Price: High to Low</SelectItem>
-              <SelectItem value="weight-asc">Carat: Low to High</SelectItem>
-              <SelectItem value="weight-desc">Carat: High to Low</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Clarity */}
+          <div className="flex-1 min-w-[120px] space-y-1">
+            <label className="text-xs font-medium text-foreground">Clarity:</label>
+            <Select value={clarity} onValueChange={onClarityChange}>
+              <SelectTrigger className="w-full h-10">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                {filterOptions.clarities.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-end gap-2">
-          <Button 
-            onClick={onReset} 
-            variant="outline" 
-            className="flex-1"
-          >
-            Reset Filter
-          </Button>
-          <Button 
-            onClick={onRefresh} 
-            variant="outline"
-            className="flex-1"
-          >
-            Refresh
-          </Button>
+          {/* Sort By */}
+          <div className="flex-1 min-w-[140px] space-y-1">
+            <label className="text-xs font-medium text-foreground">Sort By:</label>
+            <Select value={sortBy} onValueChange={onSortByChange}>
+              <SelectTrigger className="w-full h-10">
+                <SelectValue placeholder="Default" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                <SelectItem value="weight-asc">Carat: Low to High</SelectItem>
+                <SelectItem value="weight-desc">Carat: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Button 
+              onClick={onReset} 
+              variant="outline" 
+              className="h-10 whitespace-nowrap"
+            >
+              Reset Filter
+            </Button>
+            <Button 
+              onClick={onRefresh} 
+              variant="outline"
+              className="h-10"
+            >
+              Refresh
+            </Button>
+          </div>
         </div>
       </div>
     </div>
