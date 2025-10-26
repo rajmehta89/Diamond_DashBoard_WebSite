@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Chahat Gems',
   description: 'Created By Raj Mehta',
   generator: 'v0.app',
-  icons: '/favicon.jpeg', // Correct property name for Next.js metadata
+  icons: '/favicon.png', // Correct property name for Next.js metadata
 }
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.jpeg" />
+        <link rel="icon" href="/favicon.png" />
       </head>
       <body className="font-sans antialiased">
         {children}
